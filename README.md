@@ -15,3 +15,21 @@ In depth security hardening layout for the OSI model focusing on the understandi
 <img width="1919" height="1077" alt="Screenshot 2026-06-21 102456" src="https://github.com/user-attachments/assets/7d2b5b2a-f434-478a-a394-9683205d5de5" />
 
 
+# Layer 3 (Network Layer) Simulation: PMTUD & Black Hole Failure
+
+This lab uses a decoupled client-server architecture to simulate an unfragmented path boundary restriction across a network.
+
+## 💻 Simulation Component Files
+* **`server.py`**: Initializes a listener on port `9999`. It models an endpoint situated behind a restrictive MTU network boundary and drops connections when the payload threshold is breached.
+* **`client.py`**: Interacts with the server by attempting to stream a `5120 bytes` log archive payload.
+
+## 📊 How to Run the Simulation
+To replicate the Black Hole router drop, execute the server first, followed by the client in a separate terminal window:
+
+```bash
+# Terminal 1 (Start the listener)
+python server.py
+
+# Terminal 2 (Execute the payload transmission)
+python client.py
+```

@@ -2,9 +2,9 @@
 In depth security hardening layout for the OSI model focusing on the understanding of vulnerabilities and proper security measures on all layers. 
 ---
 
-## 🗺️ Project Roadmap & Architecture
+##  Project Roadmap & Architecture
 
-### 🔹 Layer 1: Physical Layer (Completed)
+###  Layer 1: Physical Layer (Completed)
 * **Vulnerability Context:** Fiber optic lines rely on Total Internal Reflection (TIR). Attackers can physically tap cables using macro-bending or high-refractive-index prisms to leak photon signals, converting them back into raw network frames.
 * **Cryptographic Mitigation:** Implementing an isolated, encrypted virtual tunnel over the untrusted physical network link.
 * **Tooling Used:** 
@@ -19,11 +19,11 @@ In depth security hardening layout for the OSI model focusing on the understandi
 
 This lab uses a decoupled client-server architecture to simulate an unfragmented path boundary restriction across a network.
 
-## 💻 Simulation Component Files
+##  Simulation Component Files
 * **`server.py`**: Initializes a listener on port `9999`. It models an endpoint situated behind a restrictive MTU network boundary and drops connections when the payload threshold is breached.
 * **`client.py`**: Interacts with the server by attempting to stream a `5120 bytes` log archive payload.
 
-## 📊 How to Run the Simulation
+##  How to Run the Simulation
 To replicate the Black Hole router drop, execute the server first, followed by the client in a separate terminal window:
 
 ```bash

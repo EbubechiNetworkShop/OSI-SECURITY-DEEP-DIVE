@@ -79,34 +79,34 @@ This repository documents a deep-dive investigation into the 7 layers of the OSI
 
 ---
 
-## 📁 Layer 5: Session Layer (Dialogue Control & Session Lifecycle)
+# Layer 5: Session Layer (Dialogue Control & Session Lifecycle)
 
-### 🔹 The Objective
+###  The Objective
 To analyze the mechanics of Layer 5, I investigated a complete Session Initiation Protocol (SIP) and Session Description Protocol (SDP) transaction using a target packet capture trace (`MagicJack+_short_test_call.pcap`). The goal was to trace how endpoints securely establish, manage, and gracefully terminate a logical dialogue independent of the underlying transport protocols.
 
-### 🔹 Step 1: Packet Dissection & Dialogue Breakdown
+###  Step 1: Packet Dissection & Dialogue Breakdown
 Using Wireshark's display filters to isolate the `sip` protocol, I tracked the raw sequential state transitions of the session establishment phase.
 
-![Wireshark SIP Traffic Capture](./images/layer5_sip_packets.png)
-*Figure 1: Analysis of the initial multi-stage SIP dialogue handshake rows.*
+<img width="1247" height="560" alt="Screenshot 2026-07-20 025641" src="https://github.com/user-attachments/assets/2067c6b5-a1d2-44d8-8c08-8363b437d5c8" />
 
-#### **Technical Analysis & Fluid Intelligence Discovery:**
+
+#### **Technical Analysis**
 * **The Security Challenge (Packets 46–49):** The client (`192.168.0.10`) initiated a session request via an `INVITE`. The server (`216.234.64.8`) responded with a `401 Unauthorized` challenge, demanding cryptographic credentials. The client cleanly acknowledged (`ACK`) the rejection, completing the first sub-dialogue thread.
 * **The Authenticated Success (Packets 50–54 & 925):** The client dynamically adapted, immediately re-transmitting an updated `INVITE` containing the necessary authentication headers. The server validated the credentials, passing through provisional states (`100 Trying` and `183 Session Progress`) before issuing a definitive `200 OK` approval to officially establish the session.
 
 ---
 
-### 🔹 Step 2: Visualizing the Complete Session Lifecycle
+###  Step 2: Visualizing the Complete Session Lifecycle
 To abstract the raw data rows into a clear engineering storyline, I extracted Wireshark's **VoIP Flow Graph** (`Telephony > VoIP Calls > Flow Sequence`). This cleanly maps out the dialogue logic from initialization to teardown.
 
-![Wireshark VoIP Flow Sequence Graph](./images/layer5_voip_flow.png)
-*Figure 2: Fully mapped SIP ladder diagram displaying the entire session lifecycle.*
+<img width="949" height="466" alt="Screenshot 2026-07-20 030722" src="https://github.com/user-attachments/assets/c332c1a2-161c-45a3-bdb1-8ae45954f310" />
 
-#### **Architectural Insights from the Flow Graph:**
+
+### **Architectural Insights from the Flow Graph:**
 1. **Payload Codec Negotiation:** During the second handshake phase, the data label transitions to **SIP/SDP**. The embedded **SDP (Session Description Protocol)** payload successfully negotiated the media parameters, locking in the `g711U` voice audio codec and specific UDP communication ports.
 2. **Graceful Session Teardown:** The ladder diagram exposes the critical terminal phase of Layer 5. At time `178.84`, the client issues a **`BYE`** command to hang up. The server immediately returns a final **`200 OK`**. This clean exchange proves that the session successfully dismantled its communication channel, preventing orphan sockets, resource ties, or memory leaks on the server.
 
-### 🔹 Key Engineering Skills Demonstrated
+###  Key Engineering Skills Demonstrated
 * **Stateful Dialogue Analysis:** Traced asynchronous client-server token verification states across failures and successes.
 * **Metadata Manipulation:** Evaluated Layer 5 encapsulation mechanics (`Call-ID`, `CSeq` sequence trackers) to verify transaction synchronicity.
 * **Lifecycle Mapping:** Documented complete connection lifetimes from initial handshake through payload negotiation to terminal teardown.

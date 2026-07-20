@@ -4,7 +4,7 @@ In depth security hardening layout for the OSI model focusing on the understandi
 
 ##  Project Roadmap & Architecture
 
-###  Layer 1: Physical Layer (Completed)
+##  Layer 1: Physical Layer (Completed)
 * **Vulnerability Context:** Fiber optic lines rely on Total Internal Reflection (TIR). Attackers can physically tap cables using macro-bending or high-refractive-index prisms to leak photon signals, converting them back into raw network frames.
 * **Cryptographic Mitigation:** Implementing an isolated, encrypted virtual tunnel over the untrusted physical network link.
 * **Tooling Used:** 

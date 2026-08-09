@@ -130,7 +130,8 @@ When configured in **Vulnerable Parse** mode, the data translation engine execut
 * **Injected Formatting Payload:** Contains hidden system command instructions.
 * **Resulting Action:** The engine processes the untrusted layout rules, allowing command infiltration directly into the underlying operating system environment as verified by the active session response:
 
-<img width="628" height="504" alt="Screenshot 2026-08-09 140818" src="https://github.com/user-attachments/assets/48580296-cf2a-42c2-bd03-abdc4f25ffca" />
+<img width="745" height="505" alt="Screenshot 2026-08-09 142043" src="https://github.com/user-attachments/assets/5c37f8af-fa25-4185-bf6e-f5769cd63454" />
+
 
 
 ```text

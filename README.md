@@ -115,6 +115,38 @@ To abstract the raw data rows into a clear engineering storyline, I extracted Wi
 * **Lines 6-7 (TCP Connection Teardown):** Clean closure of the socket pairing using the `FIN` flag to prevent resource leaking on the host OS.
 * **Line 8 (UDP Transmission):** Direct, stateless injection of real-time voice data bypassing all handshake overhead, validating the ultra-low latency architecture required for non-blocking communication fields.
 
+# Layer 6: Presentation Layer (Completed)
+
+- **Vulnerability Context (Insecure Deserialization & Format-Level Infiltration):** The Presentation Layer handles data syntax translation, serialization, and text encoding transformations before applications process payloads. Flawed architectures accept complex serialization formats (such as programmable YAML or object streams) directly from untrusted inputs. If the backend processes this data without strict layout checks, an attacker can craft a payload with embedded formatting instructions. This tricks the parsing engine into jumping out of data parsing and executing arbitrary operating system commands during the data reconstruction phase.
+- **Security Hardening Mitigation (Format & Syntax Validation):** Implemented strict schema-enforced syntax parsing. By stripping runtime object-instantiation tags and validating the text string letter-by-letter, the backend parser isolates raw inputs into inert literal values. If a payload violates the strict layout structure by including executable macros, the engine throws an immediate syntax error and safely drops the request before code execution can occur.
+- **Tooling Used:**
+  - **Custom Serialization Lab Framework:** Built using native socket and parsing handlers to simulate multi-layered backend translation engines directly within a sandbox environment.
+
+### Presentation Translation Validation
+
+#### **Vulnerable Parse Mode (Full Syntax Engine)**
+When configured in **Vulnerable Parse** mode, the data translation engine executes both formatting rules and embedded macro logic strings.
+
+* **Injected Formatting Payload:** Contains hidden system command instructions.
+* **Resulting Action:** The engine processes the untrusted layout rules, allowing command infiltration directly into the underlying operating system environment as verified by the active session response:
+![Uploading Screenshot 2026-08-09 140858.png…]()
+
+```text
+Object Reconstructed Successfully! Data: Executing system payload 'expr 7 * 7' -> Result: 49
+```
+
+#### **Secure Parse Mode (Strict Format Validation)**
+Toggling the platform interface to **Secure Parse** mode deactivates the executable syntax engines and enforces text-only mapping criteria.
+
+* **Incoming Malicious Payload:** Checked letter-by-letter against a rigid text layout template.
+* **Resulting Output:** The application parser flags the formatting violation, safely strips execution capabilities, and drop-terminates the connection block:
+<img width="628" height="504" alt="Screenshot 2026-08-09 140818" src="https://github.com/user-attachments/assets/365cc899-73e0-4f64-b084-e7d9f9c8cf1f" />
+
+```text
+Validation Failed: Syntax Validation Failed: Invalid format structure tags. Request Safely Dropped.
+```
+
+
 
 # Layer 7: Application Layer (Completed)
 

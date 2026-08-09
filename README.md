@@ -110,6 +110,10 @@ To abstract the raw data rows into a clear engineering storyline, I extracted Wi
 * **Stateful Dialogue Analysis:** Traced asynchronous client-server token verification states across failures and successes.
 * **Metadata Manipulation:** Evaluated Layer 5 encapsulation mechanics (`Call-ID`, `CSeq` sequence trackers) to verify transaction synchronicity.
 * **Lifecycle Mapping:** Documented complete connection lifetimes from initial handshake through payload negotiation to terminal teardown.
+* **Lines 1-3 (TCP Handshake Lifecycle):** Demonstrates strict, connection-oriented state establishment via explicit `SYN` -> `SYN-ACK` -> `ACK` tracking loops before any upper-layer data transfers.
+* **Line 4 (TCP Payload Data):** Secure transmission of state-tracked payload data utilizing automatic sequence numbering and explicit arrival confirmation.
+* **Lines 6-7 (TCP Connection Teardown):** Clean closure of the socket pairing using the `FIN` flag to prevent resource leaking on the host OS.
+* **Line 8 (UDP Transmission):** Direct, stateless injection of real-time voice data bypassing all handshake overhead, validating the ultra-low latency architecture required for non-blocking communication fields.
 
 
 # Layer 7: Application Layer (Completed)
@@ -145,8 +149,3 @@ Because no user record possesses that exact string structure, the system returns
 ```text
 Login Failed!
 ```
-
-* **Lines 1-3 (TCP Handshake Lifecycle):** Demonstrates strict, connection-oriented state establishment via explicit `SYN` -> `SYN-ACK` -> `ACK` tracking loops before any upper-layer data transfers.
-* **Line 4 (TCP Payload Data):** Secure transmission of state-tracked payload data utilizing automatic sequence numbering and explicit arrival confirmation.
-* **Lines 6-7 (TCP Connection Teardown):** Clean closure of the socket pairing using the `FIN` flag to prevent resource leaking on the host OS.
-* **Line 8 (UDP Transmission):** Direct, stateless injection of real-time voice data bypassing all handshake overhead, validating the ultra-low latency architecture required for non-blocking communication fields.

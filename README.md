@@ -15,7 +15,7 @@ In depth security hardening layout for the OSI model focusing on the understandi
 <img width="1919" height="1077" alt="Screenshot 2026-06-21 102456" src="https://github.com/user-attachments/assets/7d2b5b2a-f434-478a-a394-9683205d5de5" />
 
 
-# Layer 3 (Network Layer) Simulation: PMTUD & Black Hole Failure
+# Layer 3 Network Layer (Completed): 
 
 This lab uses a decoupled client-server architecture to simulate an unfragmented path boundary restriction across a network.
 
@@ -33,7 +33,7 @@ python server.py
 # Terminal 2 (Execute the payload transmission)
 python client.py
 ```
-## Layer 4: Transport Layer (Completed)
+# Layer 4: Transport Layer (Completed)
 
 * **Vulnerability Context (Port Spoofing & Traffic Interception):** Attackers targeting application ports try to cause stateful denial of service (like SYN floods) or sniff unencrypted streams. Additionally, deploying standard applications over identical port boundaries can introduce processing bottlenecks or traffic leaking if the host operating system cannot cleanly segregate the data planes.
 
@@ -79,7 +79,7 @@ This repository documents a deep-dive investigation into the 7 layers of the OSI
 
 ---
 
-# Layer 5: Session Layer (Dialogue Control & Session Lifecycle)
+# Layer 5: Session Layer (Completed)
 
 ###  The Objective
 To analyze the mechanics of Layer 5, I investigated a complete Session Initiation Protocol (SIP) and Session Description Protocol (SDP) transaction using a target packet capture trace (`MagicJack+_short_test_call.pcap`). The goal was to trace how endpoints securely establish, manage, and gracefully terminate a logical dialogue independent of the underlying transport protocols.
@@ -110,6 +110,42 @@ To abstract the raw data rows into a clear engineering storyline, I extracted Wi
 * **Stateful Dialogue Analysis:** Traced asynchronous client-server token verification states across failures and successes.
 * **Metadata Manipulation:** Evaluated Layer 5 encapsulation mechanics (`Call-ID`, `CSeq` sequence trackers) to verify transaction synchronicity.
 * **Lifecycle Mapping:** Documented complete connection lifetimes from initial handshake through payload negotiation to terminal teardown.
+
+
+# Layer 7: Application Layer (Completed)
+
+- **Vulnerability Context (SQL Injection Authentication Bypass):** Flawed web applications accept user inputs as raw strings and concatenate them directly into SQL statements before passing them to the database engine. Attackers can exploit this structural vulnerability by injecting malicious code containing SQL control characters (such as quotes `'` and comments `--` or `#`). This manipulates the backend logic to disregard critical query conditions—such as a password verification block—allowing unauthorized access to privileged accounts without credential validation.
+- **Security Hardening Mitigation (Parameterized Queries & Prepared Statements):** Implemented a rigorous data-plane separation using Parameterized Queries (Prepared Statements). By pre-compiling the structural database blueprint first, the application engine enforces strict structural typing. When a user input payload containing characters like `admin' --` is received, the database engine reads the input letter-by-letter as a literal string value rather than executable logical code. The query evaluates against the literal username, safely matches 0 rows, and cleanly restricts access with a standardized application rejection.
+- **Tooling Used:**
+  - **SQLi Auth Bypass Lab Frontend:** Used to test and validate input mutations across divergent query handling frameworks.
+  - **Backend Server Logs:** Inspected live query execution flows to audit the transformation of inputs from active logical operators to inert literal values.
+
+### Defensive Validation Analysis
+
+#### **Vulnerable Query Mode**
+When the validation interface is configured in **Vulnerable Query** mode, input strings directly mutate the runtime database execution engine logic.
+
+* **Injected User Payload:** `admin' --`
+* **Resulting Runtime Statement:** `SELECT * FROM users WHERE username = 'admin' -- ' AND password = '...';`
+
+Because the database engine reads the double dash (`--`) as a code control symbol, it strips out the entire password criteria segment. This forces a logical bypass, directly logging the attacker into the application as demonstrated by the session telemetry returning the explicit tuple fields:
+
+```text
+Welcome back, (1, 'admin', 'super_secret_2026')! (Logged in via vulnerable mode)
+```
+
+#### **Secure Query Mode**
+When toggling the platform interface to **Secure Query** mode, the pre-compiled database structural blueprint prevents command injection entirely. 
+
+* **Pre-compiled Structural Blueprint:** `SELECT * FROM users WHERE username = ? AND password = ?;`
+* **Resulting Literal Evaluation:** The database searches for a literal username string matching `admin' --`. 
+
+Because no user record possesses that exact string structure, the system returns 0 matching rows. The authentication logic securely fails closed, returning a safe, uniform interface exception:
+
+```text
+Login Failed!
+```
+
 * **Lines 1-3 (TCP Handshake Lifecycle):** Demonstrates strict, connection-oriented state establishment via explicit `SYN` -> `SYN-ACK` -> `ACK` tracking loops before any upper-layer data transfers.
 * **Line 4 (TCP Payload Data):** Secure transmission of state-tracked payload data utilizing automatic sequence numbering and explicit arrival confirmation.
 * **Lines 6-7 (TCP Connection Teardown):** Clean closure of the socket pairing using the `FIN` flag to prevent resource leaking on the host OS.

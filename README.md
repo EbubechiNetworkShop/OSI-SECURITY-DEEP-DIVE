@@ -1,5 +1,9 @@
 # OSI-SECURITY-DEEP-DIVE
 In depth security hardening layout for the OSI model focusing on the understanding of vulnerabilities and proper security measures on all layers. 
+# Comprehensive OSI Model Network Analysis Project
+
+This repository documents a deep-dive investigation into the 7 layers of the OSI model. By utilizing network simulation tools and packet analysis, I isolated, mapped, and analyzed real-world network mechanics unique to each layer of the network stack.
+
 ---
 
 ##  Project Roadmap & Architecture
@@ -15,7 +19,7 @@ In depth security hardening layout for the OSI model focusing on the understandi
 <img width="1919" height="1077" alt="Screenshot 2026-06-21 102456" src="https://github.com/user-attachments/assets/7d2b5b2a-f434-478a-a394-9683205d5de5" />
 
 
-# Layer 3 Network Layer (Completed): 
+# Layer 3 Network Layer (Completed)
 
 This lab uses a decoupled client-server architecture to simulate an unfragmented path boundary restriction across a network.
 
@@ -73,10 +77,6 @@ Stream.Write(DataTCP, 0, \(DataTCP.Length)\)ClientTCP.Close()
 
 <img width="952" height="877" alt="Screenshot 2026-07-11 084548" src="https://github.com/user-attachments/assets/72891a46-35e3-4f07-bec8-01c6fe8f5da1" />
 
-# Comprehensive OSI Model Network Analysis Project
-
-This repository documents a deep-dive investigation into the 7 layers of the OSI model. By utilizing network simulation tools and packet analysis, I isolated, mapped, and analyzed real-world network mechanics unique to each layer of the network stack.
-
 ---
 
 # Layer 5: Session Layer (Completed)
@@ -129,6 +129,7 @@ When configured in **Vulnerable Parse** mode, the data translation engine execut
 
 * **Injected Formatting Payload:** Contains hidden system command instructions.
 * **Resulting Action:** The engine processes the untrusted layout rules, allowing command infiltration directly into the underlying operating system environment as verified by the active session response:
+
 ![Uploading Screenshot 2026-08-09 140858.png…]()
 
 ```text

@@ -18,6 +18,15 @@ This repository documents a deep-dive investigation into the 7 layers of the OSI
 
 <img width="1919" height="1077" alt="Screenshot 2026-06-21 102456" src="https://github.com/user-attachments/assets/7d2b5b2a-f434-478a-a394-9683205d5de5" />
 
+# Layer 2: Data Link Layer (Completed)
+
+- **Vulnerability Context (MAC Table Exhaustion & Hub-Mode Failover):** Switches route local Ethernet frames by dynamically tracking device locations in a specialized memory area called the CAM Table (Content Addressable Memory). Switches build this seating chart passively by inspecting the Source MAC addresses of incoming frames. Attackers can exploit this trust-by-default behavior by blasting thousands of fake MAC addresses into a single switch port. When the CAM table fills to capacity, the switch enters a "fail-open" state. To guarantee data delivery, it reverts to acting like an old-school network hub, copying all private unicast traffic out of every single active port. This breaks local network isolation and allows an attacker to sniff sensitive data across the entire segment.
+- **Security Hardening Mitigation (Port Security & MAC Limiting):** Implemented access-layer port hardening to enforce strict hardware limitations. By configuring Port Security, the network environment restricts the maximum number of unique MAC addresses allowed on a single physical interface. Additional safeguards like "Sticky MACs" permanently lock a port to the first legitimate hardware address it sees. If a host violates these threshold restrictions by executing a flooding script, the switch triggers an immediate security exception, transitioning the offending port into a `shutdown` or `restrict` state to instantly isolate the malicious device before memory resource collapse occurs.
+- **Tooling Used:**
+    - **Python 3 & Scapy:** Used to craft custom Layer 2 frame structures containing randomized hardware address structures (`RandMAC()`) and broadcast destinations (`ff:ff:ff:ff:ff:ff`) to automate the flood generation block.
+    - **VirtualBox Private Segment (`vlan_vbox10`):** Established an isolated broadcast domain to trap high-speed flooding traffic and prevent leakage onto the physical host network.
+    - **Wireshark:** Configured in **Promiscuous Mode (Allow All)** on the analysis endpoint to visually capture, dissect, and document the resulting frame saturation metrics.
+ 
 
 # Layer 3 Network Layer (Completed)
 

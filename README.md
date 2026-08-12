@@ -26,6 +26,8 @@ This repository documents a deep-dive investigation into the 7 layers of the OSI
     - **Python 3 & Scapy:** Used to craft custom Layer 2 frame structures containing randomized hardware address structures (`RandMAC()`) and broadcast destinations (`ff:ff:ff:ff:ff:ff`) to automate the flood generation block.
     - **VirtualBox Private Segment (`vlan_vbox10`):** Established an isolated broadcast domain to trap high-speed flooding traffic and prevent leakage onto the physical host network.
     - **Wireshark:** Configured in **Promiscuous Mode (Allow All)** on the analysis endpoint to visually capture, dissect, and document the resulting frame saturation metrics.
+ <img width="915" height="300" alt="image" src="https://github.com/user-attachments/assets/65a17624-56ab-4ad1-86ae-f6b04713e40f" />
+
  
 
 # Layer 3 Network Layer (Completed)
